@@ -1,5 +1,7 @@
 # Python wrapper for Toggl API
 
+[![Build Status](https://travis-ci.org/dobarkod/pytoggl.png?branch=master)](https://travis-ci.org/dobarkod/pytoggl)
+
 This is a Python wrapper for the
 [Toggl API (v8)](https://github.com/toggl/toggl_api_docs/blob/master/toggl_api.md)
 and the
