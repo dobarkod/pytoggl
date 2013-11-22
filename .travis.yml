@@ -1,3 +1,3 @@
 language: python
-install: pip install . pytest
-script: PYTHONPATH=. py.test
+install: pip install . pytest pytest-cov coverage
+script: PYTHONPATH=. py.test --cov toggl
