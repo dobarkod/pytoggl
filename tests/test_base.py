@@ -47,8 +47,8 @@ def test_object_string_methods_returns_name_attribute():
     assert str(o) == 'mr.foo'
     assert unicode(o) == u'mr.foo'
 
-def test_object_parse_constructs_attribs_from_data():
-    o = MyObject.parse(None, {'a': 1, 'b': 'foo'})
+def test_object_init_constructs_attribs_from_kwargs():
+    o = MyObject(None, a=1, b='foo')
 
     assert o.a == 1
     assert o.b == 'foo'

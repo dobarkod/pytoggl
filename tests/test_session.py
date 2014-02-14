@@ -79,3 +79,18 @@ def test_session_get_throws_error_on_non_json_response(requests):
 
     assert e.value.status_code == 0
     assert e.value.message == 'not a json!'
+
+
+@patch('toggl.session.requests')
+def test_session_post_sends_post_request(requests):
+    session = requests.Session.return_value
+    session.post.return_value = Mock(status_code=200)
+    session.post.return_value.json.return_value = {}
+
+    s = Session('http://example.com/', 'my-secret-token')
+    resp = s.post('foo', {'bar': 'baz'})
+
+    assert resp == {}
+
+    session.post.assert_called_once_with(
+        'http://example.com/foo', data='{"bar": "baz"}')
