@@ -1,6 +1,7 @@
 import requests
 from urllib import urlencode
 import logging
+import json
 
 from .error import Error
 
@@ -16,13 +17,12 @@ class Session(object):
 
     def _exec(self, method, url, *args, **kwargs):
         try:
-            log.debug("[req]: %s?%s" % (self.base_url + url,
-                urlencode(kwargs.get('params'))))
+            log.debug("[req]: %s?%s [data: %s]" % (self.base_url + url,
+                urlencode(kwargs.get('params', {})), kwargs.get('data')))
             response = method(self.base_url + url, *args, **kwargs)
             log.debug("[resp %d]: %s" % (response.status_code,
                 repr(response.text)))
         except Exception as ex:
-            print "HERE!", repr(ex)
             log.debug("[err]: %s" % str(ex))
             raise Error(str(ex))
 
@@ -37,3 +37,12 @@ class Session(object):
 
     def get(self, url, **params):
         return self._exec(self.session.get, url, params=params)
+
+    def post(self, url, data):
+        return self._exec(self.session.post, url, data=json.dumps(data))
+
+    def put(self, url, data):
+        return self._exec(self.session.put, url, data=json.dumps(data))
+
+    def delete(self, url):
+        return self._exec(self.session.delete, url)
