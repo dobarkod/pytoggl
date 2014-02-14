@@ -8,12 +8,19 @@ __all__ = ['Reports']
 class Node(object):
 
     def __init__(self, **attribs):
+        def parse_val(v):
+            if isinstance(v, Node):
+                return v
+            elif isinstance(v, dict):
+                return Node(**v)
+            else:
+                return v
+
         for k, v in attribs.iteritems():
             if isinstance(v, list):
-                attribs[k] = [el if isinstance(el, Node) else Node(**el)
-                    for el in v]
+                attribs[k] = [parse_val(el) for el in v]
             elif isinstance(v, dict):
-                attribs[k] = v if isinstance(v, Node) else Node(**v)
+                attribs[k] = parse_val(v)
         self.__dict__.update(attribs)
 
     @property
@@ -74,10 +81,10 @@ class Reports(object):
     @classmethod
     def _get_totals(cls, data):
         return Node(
-            grand=data.total_grand // 1000,
-            grand_hm=cls._ms_to_hm(data.total_grand),
-            billable=data.total_billable // 1000,
-            billable_hm=cls._ms_to_hm(data.total_billable),
+            grand=(data.total_grand or 0) // 1000,
+            grand_hm=cls._ms_to_hm(data.total_grand or 0),
+            billable=(data.total_billable or 0)// 1000,
+            billable_hm=cls._ms_to_hm(data.total_billable or 0),
             currencies=data.total_currencies)
 
     @staticmethod
@@ -95,16 +102,16 @@ class Reports(object):
         data = self.request('summary', **params)
 
         def _get_title(t):
-            if hasattr(t, 'project'):
+            if hasattr(t, 'time_entry'):
+                return t.time_entry
+            elif hasattr(t, 'task'):
+                return t.task
+            elif hasattr(t, 'project'):
                 return t.project
             elif hasattr(t, 'client'):
                 return t.client
             elif hasattr(t, 'user'):
                 return t.user
-            elif hasattr(t, 'task'):
-                return t.task
-            elif hasattr(t, 'time_entry'):
-                return t.time_entry
             else:
                 return ''
 
