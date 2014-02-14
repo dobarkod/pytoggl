@@ -21,6 +21,11 @@ class Project(Object):
         return ProjectUserList(self.api,
             url='projects/%d/project_users' % self.id)
 
+    @cached_property
+    def tasks(self):
+        from .task import TaskList
+        return TaskList(self.api, url='projects/%d/tasks' % self.id)
+
 
 class ProjectUserList(ObjectList):
     """A collection of Project-User mappings."""

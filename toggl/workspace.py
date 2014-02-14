@@ -23,3 +23,8 @@ class Workspace(Object):
     def projects(self):
         from .project import ProjectList
         return ProjectList(self.api, url='workspaces/%d/projects' % self.id)
+
+    @cached_property
+    def tasks(self):
+        from .task import TaskList
+        return TaskList(self.api, url='workspaces/%d/tasks' % self.id)
